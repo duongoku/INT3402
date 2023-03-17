@@ -52,4 +52,4 @@ To see more information about the command, run the following command in the term
 python lexer.py -h
 ```
 
-You can also run this online on [Repl.it](https://replit.com/@duongoku/Lexer).
+You can also run this online on [Repl.it](https://replit.com/@duongoku/Lexer#README.md).
