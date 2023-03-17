@@ -1,0 +1,244 @@
+{
+  "keywords": [
+    "boolean",
+    "break",
+    "continue",
+    "else",
+    "for",
+    "float",
+    "if",
+    "int",
+    "return",
+    "void",
+    "while"
+  ],
+  "special_literals": [
+    "true",
+    "false"
+  ],
+  "separators": " \t\n\r\f(){}[],;+-*/=!<>",
+  "terminal_types": [
+    "IDENTIFIER",
+    "KEYWORD",
+    "RELATIONAL_OPERATOR",
+    "ASSIGNMENT_OPERATOR",
+    "COMPARATIVE_OPERATOR",
+    "LOGIC_OPERATOR",
+    "ARITHMETIC_OPERATOR",
+    "SEPARATOR",
+    "INTEGER_LITERAL",
+    "FLOAT_LITERAL",
+    "STRING_LITERAL",
+    "COMMENT"
+  ],
+  "nodes": {
+    "0": {
+      "children": {
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_": "1",
+        "<": "2",
+        ">": "4",
+        "=": "6",
+        "!": "8",
+        "&": "10",
+        "|": "12",
+        "+-*": "14",
+        "(){}[],;": "15",
+        "0123456789": "16",
+        ".": "17",
+        "\"": "22",
+        "/": "25"
+      },
+      "terminal": false,
+      "starting": true
+    },
+    "1": {
+      "children": {
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_0123456789": "1"
+      },
+      "terminal": true,
+      "terminal_type": "IDENTIFIER"
+    },
+    "2": {
+      "children": {
+        "=": "3"
+      },
+      "terminal": true,
+      "terminal_type": "RELATIONAL_OPERATOR"
+    },
+    "3": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "RELATIONAL_OPERATOR"
+    },
+    "4": {
+      "children": {
+        "=": "5"
+      },
+      "terminal": true,
+      "terminal_type": "RELATIONAL_OPERATOR"
+    },
+    "5": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "RELATIONAL_OPERATOR"
+    },
+    "6": {
+      "children": {
+        "=": "7"
+      },
+      "terminal": true,
+      "terminal_type": "ASSIGNMENT_OPERATOR"
+    },
+    "7": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "COMPARATIVE_OPERATOR"
+    },
+    "8": {
+      "children": {
+        "=": "9"
+      },
+      "terminal": true,
+      "terminal_type": "COMPARATIVE_OPERATOR"
+    },
+    "9": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "COMPARATIVE_OPERATOR"
+    },
+    "10": {
+      "children": {
+        "&": "11"
+      },
+      "terminal": false
+    },
+    "11": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "LOGIC_OPERATOR"
+    },
+    "12": {
+      "children": {
+        "|": "13"
+      },
+      "terminal": false
+    },
+    "13": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "LOGIC_OPERATOR"
+    },
+    "14": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "ARITHMETIC_OPERATOR"
+    },
+    "15": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "SEPARATOR"
+    },
+    "16": {
+      "children": {
+        "0123456789": "16",
+        ".": "17",
+        "Ee": "19"
+      },
+      "terminal": true,
+      "terminal_type": "INTEGER_LITERAL"
+    },
+    "17": {
+      "children": {
+        "0123456789": "18"
+      },
+      "terminal": false
+    },
+    "18": {
+      "children": {
+        "0123456789": "18",
+        "Ee": "19"
+      },
+      "terminal": true,
+      "terminal_type": "FLOAT_LITERAL"
+    },
+    "19": {
+      "children": {
+        "+-": "20",
+        "0123456789": "21"
+      },
+      "terminal": false
+    },
+    "20": {
+      "children": {
+        "0123456789": "21"
+      },
+      "terminal": false
+    },
+    "21": {
+      "children": {
+        "0123456789": "21"
+      },
+      "terminal": true,
+      "terminal_type": "FLOAT_LITERAL"
+    },
+    "22": {
+      "children": {
+        "EXCLUDE\"\r\n": "22",
+        "\\": "23",
+        "\"": "24"
+      },
+      "terminal": false
+    },
+    "23": {
+      "children": {
+        "bfnt\"'\\": "22"
+      },
+      "terminal": false
+    },
+    "24": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "STRING_LITERAL"
+    },
+    "25": {
+      "children": {
+        "*": "26",
+        "/": "29"
+      },
+      "terminal": true,
+      "terminal_type": "ARITHMETIC_OPERATOR"
+    },
+    "26": {
+      "children": {
+        "EXCLUDE*": "26",
+        "*": "27"
+      },
+      "terminal": false
+    },
+    "27": {
+      "children": {
+        "EXCLUDE*/": "26",
+        "*": "27",
+        "/": "28"
+      },
+      "terminal": false
+    },
+    "28": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "COMMENT"
+    },
+    "29": {
+      "children": {
+        "EXCLUDE\r\n": "29",
+        "\r\n": "30"
+      },
+      "terminal": false
+    },
+    "30": {
+      "children": {},
+      "terminal": true,
+      "terminal_type": "COMMENT"
+    }
+  }
+}
