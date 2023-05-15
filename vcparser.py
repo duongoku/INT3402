@@ -213,6 +213,16 @@ def get_parse_table(rules):
                         parse_table[(rule, '$')] = []
                     if rules[rule][i] not in parse_table[(rule, '$')]:
                         parse_table[(rule, '$')].append(rules[rule][i])
+
+    
+    # Check for conflicts in the parse table
+    for rule in parse_table:
+        if len(parse_table[rule]) > 1:
+            print('The grammar is not LL(1)')
+            print(f'Conflicts in the parse table for {rule}')
+            print(rule, parse_table[rule])
+            exit()
+
     return parse_table
 
 def parse(parse_table, token_list):
@@ -263,9 +273,9 @@ def parse(parse_table, token_list):
             stack.pop()
             token_list.pop(0)
         elif stack[-1] in terminals:
-            return False
+            return f'Error: Expecting {stack[-1]} but got {current_token}'
         elif (stack[-1], current_token) not in parse_table:
-            return False
+            return f'Error: Expecting {stack[-1]} but got {current_token}'
         else:
             # Push next if not match
             temp = parse_table[(stack[-1], current_token)]
