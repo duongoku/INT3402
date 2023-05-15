@@ -1,0 +1,59 @@
+INTEGER_LITERAL | FLOAT_LITERAL | STRING_LITERAL | IDENTIFIER
+program -> type program-1 | epsilon
+program-1 -> identifier program-2
+program-2 -> para-list compound-stmt program | temp3 temp2 temp1 ; program
+func-decl -> type identifier para-list compound-stmt
+var-decl -> type init-declarator-list ;
+init-declarator-list -> init-declarator temp1
+temp1 -> , init-declarator temp1 | epsilon
+init-declarator -> declarator temp2
+temp2 -> = initialiser | epsilon
+declarator -> identifier temp3
+temp3 -> [ temp4 ] | epsilon
+temp4 -> INTEGER_LITERAL | epsilon
+initialiser -> expr temp5
+temp5 -> { temp6 } | epsilon
+temp6 -> expr temp7
+temp7 -> , temp7 | epsilon
+type -> void | boolean | int | float
+identifier -> IDENTIFIER
+compound-stmt -> { temp8 temp9 }
+temp8 -> var-decl temp8 | epsilon
+temp9 -> stmt temp9 | epsilon
+stmt -> compound-stmt | for-stmt | while-stmt | break-stmt | continue-stmt | return-stmt | expr-stmt
+for-stmt -> for ( temp11 ; temp11 ; temp11 ) stmt
+temp11 -> expr | epsilon
+while-stmt -> while ( expr ) stmt
+break-stmt -> break ;
+continue-stmt -> continue ;
+return-stmt -> return temp11 ;
+expr-stmt -> temp11 ;
+expr -> assignment-expr
+assignment-expr -> cond-or-expr temp12
+temp12 -> = assignment-expr | epsilon
+cond-or-expr -> cond-and-expr temp13
+temp13 -> VERTICAL_BARVERTICAL_BAR cond-and-expr temp13 | epsilon
+cond-and-expr -> equality-expr temp14
+temp14 -> && equality-expr temp14 | epsilon
+equality-expr -> rel-expr temp15
+temp15 -> == rel-expr temp15 | != rel-expr temp15 | epsilon
+rel-expr -> additive-expr temp16
+temp16 -> < additive-expr temp16 | <= additive-expr temp16 | > additive-expr temp16 | >= additive-expr temp16 | epsilon
+additive-expr -> multiplicative-expr temp17
+temp17 -> + multiplicative-expr temp17 | - multiplicative-expr temp17 | epsilon
+multiplicative-expr -> unary-expr temp18
+temp18 -> * unary-expr temp18 | / unary-expr temp18 | epsilon
+unary-expr -> primary-expr temp19
+temp19 -> ! temp19 | epsilon
+primary-expr -> identifier temp20 | ( expr ) | INTEGER_LITERAL | FLOAT_LITERAL | STRING_LITERAL | true | false
+temp20 -> arg-list | [ expr ] | epsilon
+para-list -> ( temp21 )
+temp21 -> proper-para-list | epsilon
+proper-para-list -> para-decl temp22
+temp22 -> , para-decl temp22 | epsilon
+para-decl -> type declarator
+arg-list -> ( temp23 )
+temp23 -> proper-arg-list | epsilon
+proper-arg-list -> arg temp24
+temp24 -> , arg temp24 | epsilon
+arg -> expr

@@ -28,12 +28,14 @@ def check_match(match: str, char: str):
     bool
         True if the match contains the character, False otherwise
     """
+    global EXCLUDE
+
     if match.startswith(EXCLUDE):
         return char not in match[len(EXCLUDE):]
     return char in match
 
-#
-def lexer(source: str, nodes: dict, keywords: list, special_literals: list, separators: str):
+
+def lexer(source: str, nodes: dict, keywords: list, special_literals: list, separators: str, no_comments: bool = False):
     """
     Parameters
     ----------
@@ -47,12 +49,15 @@ def lexer(source: str, nodes: dict, keywords: list, special_literals: list, sepa
         the list of special literals
     separators : str
         the list of separators
+    no_comments : bool, optional
+        whether to ignore comments or not, by default False
 
     Returns
     -------
     list
         a list of tokens
     """
+    global WHITESPACES, NEWLINE
 
     # Initialize the starting state
     STARTING_STATE = "0"
@@ -147,8 +152,78 @@ def lexer(source: str, nodes: dict, keywords: list, special_literals: list, sepa
                 tokens.append({"token": token, "type": "SPECIAL_LITERAL", "line": line, "start": start, "end": position})
             else:
                 tokens.append({"token": token, "type": nodes[state]["terminal_type"], "line": line, "start": start, "end": position})
+    
+    if no_comments:
+        tokens = [token for token in tokens if token["type"] != "COMMENT"]
 
     return tokens
+
+def run_lexer(filename, datafile, no_comments):
+    """
+    Parameters
+    ----------
+    filename : str
+        the name of the file to parse
+    datafile : str
+        the name of the file containing the DFA
+    no_comments : bool
+        whether to ignore comments or not
+
+    Returns
+    -------
+    list
+        a list of tokens
+    """
+
+    # Read the source code and data file containing the DFA
+    source = read_file(filename)
+    with open(datafile, "r") as file:
+        data = json.load(file)
+        KEYWORDS = data["keywords"]
+        SPECIAL_LITERALS = data["special_literals"]
+        SEPARATORS = data["separators"]
+        TOKEN_TYPES = data["terminal_types"]
+        nodes = data["nodes"]
+
+    # Parse the source code
+    print("Parsing file: " + filename)
+    start = time.time()
+    if no_comments:
+        # Remove comments if the user specified the -n or --no-comments option
+        result = lexer(source, nodes, KEYWORDS, SPECIAL_LITERALS, SEPARATORS, True)
+    else:
+        result = lexer(source, nodes, KEYWORDS, SPECIAL_LITERALS, SEPARATORS)
+    end = time.time()
+    print(f"Done in {end-start:.3f} seconds.")
+
+    # Export the tokens
+    verbose = "======= The VC compiler ======="
+    for token in result:
+        verbose += f"\nKind = {TOKEN_TYPES.index(token['type'])} [{token['type']}]"
+        verbose += f", spelling = \"{token['token']}\""
+        verbose += f", position = {token['line']}({token['start']})..{token['line']}({token['end']})"
+
+    output = ""
+    for token in result:
+        output += token["token"]
+        output += "\n"
+
+    # Remove extension from filename
+    filename = filename.split(".")
+    filename = ".".join(filename[:-1])
+
+    verbose_filename = filename + ".verbose.vctok"
+    with open(verbose_filename, "w+") as file:
+        file.write(verbose)
+
+    output_filename = filename + ".vctok"
+    with open(output_filename, "w+") as file:
+        file.write(output)
+
+    print("Exported tokens to: " + output_filename)
+    print("Exported verbose tokens to: " + verbose_filename)
+
+    return result
 
 if __name__ == "__main__":
     # Parse the command line arguments
@@ -166,46 +241,4 @@ if __name__ == "__main__":
     datafile = args.datafile
     no_comments = args.no_comments
 
-    # Read the source code and data file containing the DFA
-    source = read_file(filename)
-    with open(datafile, "r") as file:
-        data = json.load(file)
-        KEYWORDS = data["keywords"]
-        SPECIAL_LITERALS = data["special_literals"]
-        SEPARATORS = data["separators"]
-        TOKEN_TYPES = data["terminal_types"]
-        nodes = data["nodes"]
-
-    # Parse the source code
-    print("Parsing file: " + filename)
-    start = time.time()
-    result = lexer(source, nodes, KEYWORDS, SPECIAL_LITERALS, SEPARATORS)
-    end = time.time()
-    print(f"Done in {end-start:.3f} seconds.")
-
-    # Remove comments if the user specified the -n or --no-comments option
-    if no_comments:
-        result = [token for token in result if token["type"] != "COMMENT"]
-
-    # Export the tokens
-    verbose = "======= The VC compiler ======="
-    for token in result:
-        verbose += f"\nKind = {TOKEN_TYPES.index(token['type'])} [{token['type']}]"
-        verbose += f", spelling = \"{token['token']}\""
-        verbose += f", position = {token['line']}({token['start']})..{token['line']}({token['end']})"
-
-    output = ""
-    for token in result:
-        output += token["token"]
-        output += "\n"
-
-    verbose_filename = filename.split(".")[0] + ".verbose.vctok"
-    with open(verbose_filename, "w+") as file:
-        file.write(verbose)
-
-    output_filename = filename.split(".")[0] + ".vctok"
-    with open(output_filename, "w+") as file:
-        file.write(output)
-
-    print("Exported tokens to: " + output_filename)
-    print("Exported verbose tokens to: " + verbose_filename)
+    run_lexer(filename, datafile, no_comments)
