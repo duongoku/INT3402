@@ -273,9 +273,11 @@ def parse(parse_table, token_list):
             stack.pop()
             token_list.pop(0)
         elif stack[-1] in terminals:
-            return f'Error: Expecting {stack[-1]} but got {current_token}'
+            print(f'Error: Expecting {stack[-1]} but got {current_token}')
+            exit()
         elif (stack[-1], current_token) not in parse_table:
-            return f'Error: Expecting {stack[-1]} but got {current_token}'
+            print(f'Error: Expecting {stack[-1]} but got {current_token}')
+            exit()
         else:
             # Push next if not match
             temp = parse_table[(stack[-1], current_token)]
